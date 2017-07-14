@@ -1,0 +1,143 @@
+* problem
+Let us define a regular brackets sequence in the following way: 
+
+1. Empty sequence is a regular sequence. 
+
+2. If S is a regular sequence, then (S) and [S] are both regular sequences.
+ 
+3. If A and B are regular sequences, then AB is a regular sequence. 
+
+For example, all of the following sequences of characters are regular brackets sequences: 
+
+(), [], (()), ([]), ()[], ()[()] 
+
+And all of the following character sequences are not: 
+
+(, [, ), )(, ([)], ([(] 
+
+Some sequence of characters '(', ')', '[', and ']' is given.
+
+You are to find the shortest possible regular brackets sequence, that contains the given character sequence as a subsequence.
+
+Here, a string a1 a2 ... an is called a subsequence of the string b1 b2 ... bm, if there exist such indices 1 = i1 < i2 < ... < in = m, that aj = bij for all 1 = j = n.
+* solution
+** thinking
+dp method:
+dp[i][j] represent: brackets[i]...brackets[j]  min length
+
+dp[i][j] = min{dp[i][k]+dp[k+1][j]}
+
+pos[i][j] record the min length : split k
+
+output:
+recursion output
+
+** code
+#+BEGIN_SRC cpp
+  #include<stdio.h>
+  #include<string.h>
+
+
+  char s[100];
+  int dp[101][101];
+  int pos[101][101]={-1};
+  int size;
+
+  void init() {
+    for (int i=0; i<size; i++) {
+      dp[i][i] = 2;
+      pos[i][i] = -1;
+    }
+  }
+
+  /*
+    void show() {
+    for (int i=0; i<size; i++) {
+    for (int j=0; j<size; j++) {
+    printf("%d\t", dp[i][j]);
+    }
+    printf("\n");
+    }
+
+    printf("\n");
+    for (int i=0; i<size; i++) {
+    for (int j=0; j<size; j++) {
+    printf("%d\t", pos[i][j]);
+    }
+    printf("\n");
+    }
+    printf("\n");
+    }*/
+
+   
+
+  void process() {
+    for (int l=1; l<size; l++) {
+      for(int i=0; i+l<size; i++) {
+        int j = i+l;
+        int min = dp[i][i]+dp[i+1][j];
+        int index = i;
+        for (int k=i+1; k<j; k++) {
+      if (min > dp[i][k] + dp[k+1][j]) {
+        min = dp[i][k] + dp[k+1][j];
+        index = k;
+      }
+        }
+        dp[i][j] = min;
+        pos[i][j] = index;
+      
+        if ((s[i]=='(' && s[j]==')') || (s[i]=='[' && s[j]==']')) {
+      if (dp[i+1][j-1]<min) {
+        dp[i][j] = dp[i+1][j-1];
+        pos[i][j] = -1;
+      }
+        }
+      }
+    }
+  }
+
+  void output(int i, int j) {
+    if (i>j) {
+      return;
+    }
+    if (i==j) {
+      if (s[i]=='(' || s[i]==')')  printf("()");
+      if (s[i]=='[' || s[i]==']')  printf("[]");
+    } else if (pos[i][j]==-1) {
+      printf("%c", s[i]);
+      output(i+1, j-1);
+      printf("%c", s[j]);
+    } else {
+      output(i,pos[i][j]);
+      output(pos[i][j]+1, j);
+    }
+  }
+
+
+
+  int main() {
+    // freopen("in.txt", "r", stdin);
+    scanf("%s", s);
+    size = strlen(s);
+
+    init();
+    process();
+    output(0,size-1);
+   
+    printf("\n");
+
+    return 0;
+  }
+
+
+
+#+END_SRC
+ 
+** sample input
+([(]
+([)]
+]]]
+** sample output
+([()])
+([])[]
+[][][]

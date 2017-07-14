@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>1141</title>
+<!-- 2017-07-14 五 20:27 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="mick" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">1141</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. problem</a></li>
+<li><a href="#sec-2">2. solution</a>
+<ul>
+<li><a href="#sec-2-1">2.1. thinking</a></li>
+<li><a href="#sec-2-2">2.2. code</a></li>
+<li><a href="#sec-2-3">2.3. sample input</a></li>
+<li><a href="#sec-2-4">2.4. sample output</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> problem</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Let us define a regular brackets sequence in the following way: 
+</p>
+
+<ol class="org-ol">
+<li>Empty sequence is a regular sequence. 
+</li>
+
+<li>If S is a regular sequence, then (S) and [S] are both regular sequences.
+</li>
+
+<li>If A and B are regular sequences, then AB is a regular sequence. 
+</li>
+</ol>
+
+<p>
+For example, all of the following sequences of characters are regular brackets sequences: 
+</p>
+
+<p>
+(), [], (()), ([]), ()[], ()[()] 
+</p>
+
+<p>
+And all of the following character sequences are not: 
+</p>
+
+<p>
+(, [, ), )(, ([)], ([(] 
+</p>
+
+<p>
+Some sequence of characters '(', ')', '[', and ']' is given.
+</p>
+
+<p>
+You are to find the shortest possible regular brackets sequence, that contains the given character sequence as a subsequence.
+</p>
+
+<p>
+Here, a string a1 a2 &#x2026; an is called a subsequence of the string b1 b2 &#x2026; bm, if there exist such indices 1 = i1 &lt; i2 &lt; &#x2026; &lt; in = m, that aj = bij for all 1 = j = n.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> solution</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> thinking</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+dp method:
+dp[i][j] represent: brackets[i]&#x2026;brackets[j]  min length
+</p>
+
+<p>
+dp[i][j] = min{dp[i][k]+dp[k+1][j]}
+</p>
+
+<p>
+pos[i][j] record the min length : split k
+</p>
+
+<p>
+output:
+recursion output
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> code</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+
+<pre class="src src-cpp">#include&lt;stdio.h&gt;
+#include&lt;string.h&gt;
+
+
+char s[100];
+int dp[101][101];
+int pos[101][101]={-1};
+int size;
+
+void init() {
+  for (int i=0; i&lt;size; i++) {
+    dp[i][i] = 2;
+    pos[i][i] = -1;
+  }
+}
+
+/*
+  void show() {
+  for (int i=0; i&lt;size; i++) {
+  for (int j=0; j&lt;size; j++) {
+  printf("%d\t", dp[i][j]);
+  }
+  printf("\n");
+  }
+
+  printf("\n");
+  for (int i=0; i&lt;size; i++) {
+  for (int j=0; j&lt;size; j++) {
+  printf("%d\t", pos[i][j]);
+  }
+  printf("\n");
+  }
+  printf("\n");
+  }*/
+
+
+
+void process() {
+  for (int l=1; l&lt;size; l++) {
+    for(int i=0; i+l&lt;size; i++) {
+      int j = i+l;
+      int min = dp[i][i]+dp[i+1][j];
+      int index = i;
+      for (int k=i+1; k&lt;j; k++) {
+    if (min &gt; dp[i][k] + dp[k+1][j]) {
+      min = dp[i][k] + dp[k+1][j];
+      index = k;
+    }
+      }
+      dp[i][j] = min;
+      pos[i][j] = index;
+
+      if ((s[i]=='(' &amp;&amp; s[j]==')') || (s[i]=='[' &amp;&amp; s[j]==']')) {
+    if (dp[i+1][j-1]&lt;min) {
+      dp[i][j] = dp[i+1][j-1];
+      pos[i][j] = -1;
+    }
+      }
+    }
+  }
+}
+
+void output(int i, int j) {
+  if (i&gt;j) {
+    return;
+  }
+  if (i==j) {
+    if (s[i]=='(' || s[i]==')')  printf("()");
+    if (s[i]=='[' || s[i]==']')  printf("[]");
+  } else if (pos[i][j]==-1) {
+    printf("%c", s[i]);
+    output(i+1, j-1);
+    printf("%c", s[j]);
+  } else {
+    output(i,pos[i][j]);
+    output(pos[i][j]+1, j);
+  }
+}
+
+
+
+int main() {
+  // freopen("in.txt", "r", stdin);
+  scanf("%s", s);
+  size = strlen(s);
+
+  init();
+  process();
+  output(0,size-1);
+
+  printf("\n");
+
+  return 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> sample input</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+([(]
+([)]
+]]]
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> sample output</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+([()])
+([])[]
+[][][]
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: mick</p>
+<p class="date">Created: 2017-07-14 五 20:27</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.2.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
