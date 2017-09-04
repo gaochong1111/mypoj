@@ -1,0 +1,158 @@
+
+* 2479
+** problem
+Given a set of n integers: A={a1, a2,..., an}, we define a function d(A) as below:
+$$d(A) = \mathop{max}\limits_{1 \leq s_1 \leq t_1 < s_2 \leq t_2\leq n} \left\{\sum_{i=s_1}^{t_1} a_i + \sum_{j=s_2}^{t_2} a_j \right\}$$
+Your task is to calculate d(A).
+
+tips: mathop(max)
+  
+#+BEGIN_SRC latex
+$$d(A) = \mathop{max}\limits_{1 \leq s_1 \leq t_1 \le s_2 \leq t_2\leq n} \left\{\sum_{i=s_1}^{t_1} a_i + \sum_{j=s_2}^{t_2} a_j \right\}$$
+#+END_SRC
+
+ 
+** solution
+*** scratch
+example:
+A  :   -1 1 3 -100  2  1  -1 5 -1 6
+
+max:   -1 1 4  4    4  4  4  7  7 12
+
+sum:   -1 1 4 -96   2  3  2  7  6 12
+
+max:    12 12 12 12   12 10 10 10 6 6
+
+sum:    3  4 3  -88  12 10 9  10 5 6 
+
+result = 4+12 = 16
+
+
+*** thinking
+max(i) = max[0<=s<=t<size] {A[s] + ... +A[t]}
+
+DP:
+
+$$max(i) = \begin{cases}
+max \left\{max(i-1), sum(i-1)+A(i)\right\} & sum(i-1) \geq 0 \quad \&\& \quad A(i) \geq 0  \\
+max(i-1) & sum(i-1) \geq 0 \quad \&\& \quad A(i) < 0\\
+max \left\{max(i-1), A(i)\right\} & sum(i-1) < 0 \quad [sum=A(i)]
+\end{cases} $$
+max(i) =   
+
+sum(i-1) >= 0  && A(i) >= 0   ==>   max(max(i-1), sum(i-1) + A(i))
+ 
+sum(i-1) >=  0  && A(i) < 0   ==>   max(i-1)
+
+sum(i-1) < 0  && A(i) < 0     ==>   max(max(i-1), A(i)) 
+
+sum(i-1) <  0  && A(i) >= 0   ==>   max(max(i-1), A(i)) [sum=A(i)]
+
+
+variable:
+
+max : record max[0..i]
+
+max_rev: record max[i..size-1]
+
+compute the max ( max[i] + max_rev[i+1] )
+
+*** code
+#+BEGIN_SRC c++
+  // int A[10] = {-1, 1, 3, -100, 2, 1, -1, 5, -1, 6};
+
+
+  int input(int* arr) {
+    int size;
+    scanf("%d", &size);
+    for (int i=0; i<size; ++i) {
+      scanf("%d", &arr[i]);
+    }
+    return size;
+  }
+
+  int max_num(int a, int b) {
+    return a>b? a : b;
+  }
+  int main() {
+    int A[50001];
+    int max[50001];
+    int max_rev[50001];
+    int sum = 0;
+    int i = 0;
+    int result = 0;
+    int size = 0;
+    int T = 0;
+
+    scanf("%d", &T);
+
+    
+    while(T--) {
+      size = input(A);
+      sum = A[0];
+      max[0] = A[0];
+      for (i=1; i<size; ++i) {
+	if (sum < 0) {
+	  max[i] = max_num(max[i-1], A[i]);
+	  sum = 0;
+		} else if (A[i] >= 0) {
+	  max[i] = max_num(max[i-1], sum+A[i]);
+	} else {
+	   max[i] = max[i-1]; 
+	}
+	sum = sum + A[i];
+      }
+
+      max_rev[size-1] = A[size-1];
+      sum = A[size-1];
+
+      for (i=size-2; i>=0; --i) {
+	if (sum < 0) {
+	  max_rev[i] = max_num(max_rev[i+1], A[i]);
+	  sum = 0;
+	} else if (A[i] >= 0) {
+	  max_rev[i] = max_num(max_rev[i+1], sum+A[i]);
+	} else {
+	  max_rev[i] = max_rev[i+1];	
+	}
+	sum = sum + A[i];
+      }
+
+      result = max[0] + max_rev[1];
+      for (i=1; i<size-1; ++i) {
+	result = max_num(result, max[i] + max_rev[i+1]);
+      }
+
+      printf("%d\n", result);
+    }
+  }
+   
+
+
+#+END_SRC
+
+*** input sample
+T ($T \le 30$)
+
+n ($2 \le n \le 50000$)
+#+BEGIN_SRC text
+1
+10
+-1 1 3 -100  2  1  -1 5 -1 6
+
+
+2
+10
+1 -1 2 2 3 -3 4 -4 5 -5
+5
+2 2 3 -3 4
+#+END_SRC
+
+*** sample result
+#+BEGIN_SRC text
+16
+
+13
+11
+#+END_SRC
+

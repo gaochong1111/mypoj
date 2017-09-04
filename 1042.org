@@ -1,0 +1,205 @@
+* 1042
+** problem
+John want to finsh in n lakes: (1<n<26)
+John has h (0<h<17)available hours. 
+from lake i too lake i+1 time interval ti (0<ti<193)
+lake i : first 5-minutes fi (fi>=0), next 5-minutes decrease di (di>=0)
+
+give the finshing plan which make John get max number of finsh.
+
+
+** solution
+
+*** scratch
+| n  |  4 |    |    |    |
+|----+----+----+----+----|
+| h  |  4 |    |    |    |
+|----+----+----+----+----|
+| fi | 10 | 15 | 50 | 30 |
+| di |  0 |  3 |  4 |  3 |
+|----+----+----+----+----|
+| ti |  1 |  2 |  3 |    |
+
+ 
+
+
+| left h:                 | 4*12=48 |    |    |    |
+| first-5-min:(F5M)       |      10 | 15 | 50 | 30 |
+| can-fish-interval:(CFI) |       1 |  2 |  4 |  7 |
+| current_fish_time:(CFT) |       0 |  0 |  0 |  0 |
+
+one iterate:
+| left h:                  | 4*12=48 - 4 |    |    |    |
+| first-5-min:(F5M)        |          10 | 15 | 46 | 30 |
+| can-fish-interval:(CFI)  |           1 |  1 |  1 |  7 |
+| current_fish_time:(CFT)  |           0 |  0 |  1 |  0 |
+
+total_fish=0
+while: left_h>0
+find lake to finsh: select_i = max {f(i)}, f(i)=f(j) -> min(i,j) 
+
+f(i) = F5M[i] / CFI[i] ,0<=i<n and CFI[i]<=left_h  
+
+##### here has some bugs. #######
+
+total_fish += F5M[select_i]
+
+F5M[select_i] -= d[select_i]
+
+CFT[select_i] += 1
+
+left h: left_h - CFI[select_i]
+
+update CFI[j] = select_i, j<=i 
+
+*** thinking 
+for every step: select a lake to fish for the current 5-minutes, by the CFI, F5M, left_h
+
+the corrent dp solution:
+
+dp[i][j] represent first i lakes and first j time can get max number
+of fish:
+dp[i+1][j+t[i+1]+k] = max(dp[i][j]+sum_k, dp[i+1][j+t[i+1]+k]);
+
+sum_k = f[i][k] + f[i][k-1] + ... + f[i][0], f[i][k]: lake_i kth fish the number of fish
+
+
+t[i+1] = interval(lake_i --> lake_(i+1))
+
+*** code
+#+BEGIN_SRC c++
+  #include<stdio.h>
+  #include<string.h>
+
+  int max(int a, int b) {
+    return a>b? a:b;
+  }
+
+
+
+  int main() {
+
+    // freopen("fish_in.txt", "r", stdin);
+
+    // define
+    int dp[30][400]; // first i lakes first j times max fish
+    int f[30][400];
+    int t[30];
+    int d[30];
+    int n, h;
+  
+    // input
+    while(scanf("%d", &n) && n) {
+      scanf("%d", &h);
+      h *= 12;
+
+      memset(f, 0, sizeof(f));
+      for (int i=1; i<=n; i++) {
+	scanf("%d", &f[i][1]);
+      }
+
+      for (int i=1; i<=n; i++) {
+	scanf("%d", &d[i]);
+      }
+
+      for (int i=2; i<=n; i++) {
+	scanf("%d", &t[i]);
+      }
+      t[1] = 0;
+
+      for (int i=1; i<=n; i++) {
+	for (int j=2; j<=h; j++) {
+	  if (f[i][j-1] < d[i]) break;
+	  f[i][j] = f[i][j-1] - d[i];
+	}
+      }
+
+      memset(dp, -1, sizeof(dp));
+      dp[0][0]=0;
+      // dp
+      for (int i=0; i<n; i++) {
+	for (int j=0; j<=h; j++) {
+	  // lake i, time j, interval k
+	  int sum = 0;
+	  for (int k=0; k<=h && dp[i][j]!=-1; k++) {
+	    if (j+t[i+1]+k>h) break;
+	    dp[i+1][j+t[i+1]+k] = max(dp[i+1][j+t[i+1]+k], dp[i][j]+sum);
+	    if(f[i+1][k+1]>0) sum += f[i+1][k+1];
+	  }
+	}
+      }
+      // result
+      int last = 1;
+      int max_fish = 0;
+      for (int i=1; i<=n; i++) {
+	if (dp[i][h] > max_fish) {
+	  max_fish = dp[i][h];
+	  last = i;
+	}
+      }
+
+      // result time
+      int max_fish_copy = max_fish;
+      for (int i=last; i>=2; i--) {
+	int j, sum = 0;
+	for (j=0; j<=h; j++) {
+	  if (max_fish_copy == sum + (dp[i-1][h-t[i]-j])) {
+	    f[i][0] = j;
+	    break;
+	  }
+	  sum += f[i][j+1];
+	}
+
+	h = h-t[i]-j;
+	max_fish_copy -= sum;
+      }
+
+      f[1][0] = h;
+
+      // output
+
+      for (int i=1; i<n; i++) {
+	printf("%d, ", f[i][0]*5);
+      }
+      printf("%d\n", f[n][0]*5);
+
+      printf("Number of fish expected: %d \n\n", max_fish);
+    
+    }
+
+  
+    return 0;
+  }
+#+END_SRC
+
+*** input sample
+#+BEGIN_SRC 
+2 
+1 
+10 1 
+2 5 
+2 
+4 
+4 
+10 15 20 17 
+0 3 4 3 
+1 2 3 
+4 
+4 
+10 15 50 30 
+0 3 4 3 
+1 2 3 
+0 
+#+END_SRC
+
+*** output sample
+#+BEGIN_SRC 
+45, 5 
+Number of fish expected: 31 
+
+240, 0, 0, 0 
+Number of fish expected: 480 
+
+115, 10, 50, 35 
+Number of fish expected: 724 
+#+END_SRC

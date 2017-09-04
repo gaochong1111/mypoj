@@ -1,0 +1,292 @@
+* 1015
+** problem
+select n juries (J) from m candidates (C)
+
+candidate i has two properties: Defence ($0 \le d_i \le 20$) and Prosecution ($0 \le p_i \le 20$)
+
+select rule:
+
+$$\mathop{min}\limits_{J \subseteq C} \left\{\left|\sum_{i \in
+J}d_i - \sum_{j \in J} p_j \right|\right\} = \mathop{min}\limits_{J \subseteq C}\left|\sum_{i \in J} d_i - p_i\right| $$
+
+if existing several J in J':
+$$\mathop{max}\limits_{J \in J'} \left\{\sum_{i \in
+J}d_i + \sum_{j \in J} p_j \right\} =\mathop{max}\limits_{J \in J'} \left\{\sum_{i \in J} d_i + p_i\right\}$$
+
+** solution
+*** scratch
+C = {1,2,3,4}
+n=4, m=2
+
+1 2
+2 3
+4 1
+6 2
+
+
+max_sum:
+$|J|=0$:
+max_sum(0,0) = 0
+path(0,0) = -1
+$|J|=1$:
+max_sum(1,-1) = max{1+2, 2+3} = 5
+path(1,-1) = 2
+
+max_sum(1,3) = max{4+1} = 5
+path(1,3) = 3
+
+max_sum(1,4) = max{6+2} = 8
+path(1,4) = 4
+
+$|J|=2$
+$sum(1,k) \le 0$:
+k=-1, path(1,k) = 2
+J={2} + (1,2) 
+max_sum(2,-2) = 8
+J={2} + (4,1)
+max_sum(2,2) = 10
+...
+k=3
+...
+#+BEGIN_SRC c++
+  for (i in C) {
+    if (notin(i, J)) {
+      sum = max_sum[1][k] + (d[i]+p[i]);
+      k = k + (d[i]-p[i]);
+      if (max_sum[2][k] < sum){ 
+	max_sum[2][k] = sum;
+	path[2][k] = i;
+      }
+    }
+  }
+#+END_SRC
+
+
+max_sum:
+| i&k | -400 | ... | -1 |  0 | ... |  3 |  4 | ... | 400 |
+|-----+------+-----+----+----+-----+----+----+-----+-----|
+| i=0 | ...  | ... | -1 |  0 | ... | -1 | -1 | ... | ... |
+| i=1 | ...  | ... |  5 | -1 | ... |  5 |  8 | ... | ... |
+| i=2 | ...  | ... |    |    |     |    |    |     |     |
+
+path:
+| i&k | -400 | ... | -1 |  0 | ... |  3 |  4 | ... | 400 |
+|-----+------+-----+----+----+-----+----+----+-----+-----|
+| i=0 | ...  | ... | -1 | -1 | ... | -1 | -1 | ... | ... |
+| i=1 | ...  | ... |  2 | -1 | ... |  3 |  4 | ... | ... |
+| i=2 | ...  | ... |    |    |     |    |    |     |     |
+
+
+
+
+
+*** thinking
+$$-400 \le \sum_{i \in J} d_i - p_i \le 400$$
+consider $|J|={0,1,...,m}$:
+
+max_sum(i,k) represent: 
+ $$max\_sum(i,k)=\mathop{max}\limits_{|J|=i\&\&k = \sum_{i \in J}{d_i - p_i}} \left\{\sum_{i \in J}
+d_i + p_i\right\} 
+ $$
+
+path(i,k) record the last candidate i,
+back track by a step:
+$path(i, k) -> path(i, k-(d_i-p_i))$
+
+target: compute max_sum(m,k)
+
+method1:
+use n candidates and path to compute all max_sum(m-1,k) --> max_sum(m,k')
+
+bug:
+when there are several Js, we only record one which may lose some
+solutions;
+
+for example:
+
+$J_1 = \{a_1,a_2,a_3\}, J_2=\{a_3,a_4,a_5\},\quad \text{we record the
+} J_2, \quad \text{then }\quad \{a_1,a_2,a_3,a_4\} and \{a_1,a_2,a_3,a_5\}
+\quad \text{may lose}$
+
+so we use anohter method:
+
+method2:
+
+compute $max\_sum(j, k), 0 < j \le m$ 
+use the i candiates $0 < i \le n$
+and path[i][k] record a complete path.
+
+the method2 fix the bug;
+
+consider C = {1,2,...,n}
+
+solution(C, J) represent the max_sum and path
+
+solution(C, J) = solution(C-{n}, J) + n
+
+*** code
+
+#+BEGIN_SRC cpp
+  #include<stdio.h>
+  #include<vector>
+
+  int p[201];
+  int d[201];
+  int result[21];
+  int max_sum[21][801];
+
+
+
+  std::vector<int> path[21][801]; 
+  int main() {
+    int n, m;
+    int round = 1;
+    while(1) {
+      scanf("%d %d", &n, &m);
+      if (n==0) {
+	break;
+      }
+
+      for (int i=0; i<n; ++i) {
+	scanf("%d %d", &p[i], &d[i]);
+      }
+
+      for (int i=0; i<21; ++i) {
+	result[i] = -1;
+	for (int j=0; j<801; ++j) {
+	  max_sum[i][j] = -1;
+	  path[i][j].clear();
+	}
+      }
+
+      max_sum[0][400] = 0;
+  for (int k=0; k<n; ++k) {
+      for (int i=m-1; i>=0; --i) {
+	for (int j=0; j < 800; ++j) {
+	  if (max_sum[i][j] >= 0) {
+	  
+	  
+		int sum = max_sum[i][j] + (d[k]+p[k]);
+		int newj = j + (d[k]-p[k]);
+		if (sum >= max_sum[i+1][newj]) {
+		  max_sum[i+1][newj] = sum;
+		  path[i+1][newj] = path[i][j];
+		  path[i+1][newj].push_back(k);
+		
+		}
+
+	     
+	    }
+	  }
+	}
+      }
+
+  /*
+   // print code 
+   for (int i=0; i<=m; i++) {
+	for (int j=0; j<801; j++) {
+	  if (max_sum[i][j] >= 0) {
+	    printf("(%d, %d) ", (j-400), max_sum[i][j]);
+	  }
+	}
+	printf("\n");
+
+      }
+
+      printf("\n"); 
+
+      for (int i=0; i<=m; i++) {
+	for (int j=0; j<801; j++) {
+	  if (path[i][j].size() > 0) {
+	    printf("(%d, ", (j-400));
+	    for (int k=0; k<path[i][j].size(); k++) {
+	      printf("%d,", path[i][j][k]);
+	    }
+	    printf("), ");
+
+	  }
+	}
+	printf("\n");
+      }
+
+      printf("\n");
+   ,*/
+
+      int k = -1;
+      for (int i=0; i<=400; ++i) {
+	if (max_sum[m][400-i] > -1) {
+	  k = 400 - i;
+	  if (max_sum[m][400+i] >  max_sum[m][400-i]) {
+	    k = 400 + i;
+	    break;
+	  }
+	  break;
+	}
+
+	if (max_sum[m][400+i] > -1) {
+	  k = 400 + i;
+	  break;
+	} 
+      }
+
+    
+      int i = m;
+      
+      int res_p=0;
+      int res_d=0;
+
+      int sum = max_sum[m][k];
+    
+   
+      res_p = (sum - (k-400)) / 2;
+      res_d = (max_sum[m][k] + (k-400)) / 2;
+    
+    
+      printf("Jury #%d\n", round++);
+      printf("Best jury has value %d for prosecution and value %d for defence: \n", res_p, res_d);
+      for (int i=0; i<m; ++i) {
+	printf(" %d", path[m][k][i]+1);
+      }
+      printf("\n");
+      printf("\n");
+    }
+    return 0;
+  }
+#+END_SRC
+*** input sample
+#+BEGIN_SRC text
+4 2
+1 2
+2 3
+4 1
+6 2
+0 0
+
+9 6
+6 2
+16 10
+4 9
+19 8
+17 12
+4 7
+10 2
+2 14
+5 18
+0 0
+#+END_SRC
+
+*** sample result
+#+BEGIN_SRC text
+Jury #1
+Best jury has value 6 for prosecution and value 4 for defence:
+ 2 3
+Jury #1
+Best jury has value 54 for prosecution and value 54 for defence:
+ 1 2 3 4 6 9
+#+END_SRC
+
+
+
+
+
+
